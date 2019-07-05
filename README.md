@@ -1,6 +1,5 @@
-# CAR_ReconstructionAndTransformation
-Implementation of ICRA 2017 and IROS 2017
-
+# ICRA2017
+Implementation of ICRA 2017 research paper
 
 ## Instructions
 **input.txt** file contains initialization values that you can copy and paste in the matlab command line. <br/>
@@ -18,5 +17,6 @@ After initializing values you can run the script by the following command in mat
 # avgCarHeight - average car height
 # avgCarLength - average car avgCarLength
 # K - camera intrinsic matrix
-WireframeToImage(frame, seq, frm, id, camH, avgCarLength, avgCarWidth, avgCarHeight, K, Pts, lambda, V, kplookup);
+complete_pipeline;
 ```
+
