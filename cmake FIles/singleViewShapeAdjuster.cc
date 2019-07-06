@@ -147,7 +147,7 @@ int main(int argc, char** argv){
 		ceres::CostFunction *lambdaRegularizer = new ceres::AutoDiffCostFunction<LambdaRegularizer, 3, 5>(
 			new LambdaRegularizer(curEigVec));
 		// Add a residual block to the problem
-		problem.AddResidualBlock(lambdaRegularizer, new ceres::HuberLoss(0.09), lambdas);
+		problem.AddResidualBlock(lambdaRegularizer, new ceres::HuberLoss(0.10), lambdas);
 
 		// // Create a cost function to regularize 3D keypoint locations (alignment error)
 		// ceres::CostFunction *alignmentError = new ceres::AutoDiffCostFunction<LambdaAlignmentError, 3, 5>(

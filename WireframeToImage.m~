@@ -8,13 +8,14 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
     % getting the hourglass network output
     Pts = networkOutput;
     % changing network output to 2d points on the image
-    Pts = HNtoImage(Pts, tracklets)
+    Pts = HNtoImage(Pts, tracklets);
     Etrinit = [];
     EtrPose = [];
     ERepinit = [];
     EReppose = [];
     ERepshape = [];
     Figplot = [];
+    DegError = [];
     T = [1 0 0;0 cos(pi/2) sin(pi/2);0 -sin(pi/2) cos(pi/2)];
     r = [cos(pi) sin(pi) 0; -   sin(pi) cos(pi) 0;0 0 1];
     T2 = [cos(pi/2) 0 sin(pi/2); 0, 1, 0; -sin(pi/2), 0, cos(pi/2)];
@@ -33,8 +34,16 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         yp = table2array(tracklets(i,{'y2'}));
         %yp = (table2array(tracklets(i,{'y1'})) + table2array(tracklets(i,{'y2'})))/2;
         
-        %azimuthal angle
-        ry = table2array(tracklets(i,{'ry'}));
+        rycorr = table2array(tracklets(i,{'ry'}));
+        Rerror = [cos(rycorr) 0 sin(rycorr); 0 1 0; -sin(rycorr) 0 cos(rycorr)];
+        Rerrorx = [1;0;0];
+        Rcorrect = Rerror*Rerrorx;
+        Rcorrect(2) = 0;
+        corrmag = sqrt(sum(Rcorrect.^2));
+        
+        
+        %azimuthal angle with some noise
+        ry = table2array(tracklets(i,{'ry'})) + normrnd(0,15*pi/180);
         
         %calculating translation vector
         Trans = TransFromPoint(xp, yp, height_camera, K);
@@ -59,6 +68,14 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
 %         
 %         Rotcorr = eye(3,3);
 %         Tcorr = zeros(3,1);
+
+        Rnew = Rotcorr*T3*Rerrorx;
+        Rnew(2) = 0;
+        incorrectRmag = norm(Rnew);
+        thet = Rcorrect'*Rnew./(incorrectRmag*corrmag);
+        thet = acos(thet)*180./pi;
+        
+        DegError = 
 %       writing input for shape adjustment
         Write_input_Shape(NetPts', d3PlotPtsWorld3d',((Trans + Trans3dcent)), avgH, avgW, avgL, K, lambda, eigVectors, ry, kplookup, Rotcorr, Tcorr);        
 %         Write_input_Shape(NetPts', d3PlotPtsWorld',Trans + Trans3dcent, avgH, avgW, avgL, K, lambda, eigVectors, ry, kplookup, eye(3,3), zeros(3,1));
@@ -147,14 +164,16 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
     ylabel('Reprojection Error');
     legend('Initial error','Error after pose adjustment','After shape adjustment');
     hold off
-    plot(Figplot,ERepinit);
-    hold on
-    plot(Figplot,EReppose);
-    plot(Figplot,ERepshape);
-    xlabel('Figures');
-    ylabel('Reprojection Error');
-    legend('Initial error','Error after pose adjustment','After shape adjustment');    
+    title('Reprojection Error');
+    
     figure;
+    plot(Figplot,Etrinit);
+    hold on
+    plot(Figplot,EtrPose);
+    xlabel('Figures');
+    ylabel('Translation Error');
+    legend('Initial error','Error after pose adjustment');    
+    title('Translation error');
     terrortot./iter;
 
 end
