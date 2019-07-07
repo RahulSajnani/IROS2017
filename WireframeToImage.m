@@ -70,12 +70,17 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
 %         Tcorr = zeros(3,1);
 
         Rnew = Rotcorr*T3*Rerrorx;
+        inR = Rotcorr*T3;
+        A = rotm2axang(inR);
+        B = rotm2axang(Rerror);
+        cross(A(1:3)',B(1:3)');
+        DegError = [DegError; (abs((A(4) - B(4))*180/pi))]; 
         Rnew(2) = 0;
         incorrectRmag = norm(Rnew);
         thet = Rcorrect'*Rnew./(incorrectRmag*corrmag);
         thet = acos(thet)*180./pi;
         
-        DegError = [DegError;thet];
+        %DegError = [DegError;thet];
 %       writing input for shape adjustment
         Write_input_Shape(NetPts', d3PlotPtsWorld3d',((Trans + Trans3dcent)), avgH, avgW, avgL, K, lambda, eigVectors, ry, kplookup, Rotcorr, Tcorr);        
 %         Write_input_Shape(NetPts', d3PlotPtsWorld',Trans + Trans3dcent, avgH, avgW, avgL, K, lambda, eigVectors, ry, kplookup, eye(3,3), zeros(3,1));
