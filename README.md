@@ -1,5 +1,5 @@
-# ICRA2017
-Implementation of ICRA 2017 research paper
+# IROS2017
+Implementation of IROS 2017 research paper
 
 ## Instructions
 **input.txt** file contains initialization values that you can copy and paste in the matlab command line. <br/>
