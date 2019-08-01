@@ -27,7 +27,7 @@ int main(int argc, char** argv){
 	const char *outputFileName;
 
 	
-	inputFileName = "ceres_input_multiViewAdjuster.txt";
+	inputFileName = "../ceres_input_multiViewAdjuster.txt";
 	outputFileName = "ceres_output_mutliViewShapeAdjuster.txt";
 
 	// Create a 'SingleViewPoseAdjustmentProblem' instance to hold the BA problem

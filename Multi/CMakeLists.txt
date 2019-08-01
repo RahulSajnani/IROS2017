@@ -23,10 +23,6 @@ endif(CERES_FOUND)
 include_directories(${CMAKE_INCLUDE_PATH} ${CERES_INCLUDE_DIRS})
 
 # Add the executable
-add_executable(singleViewPoseAdjuster singleViewPoseAdjuster.cc)
-target_link_libraries(singleViewPoseAdjuster ${CERES_LIBRARIES})
 
-add_executable(singleViewShapeAdjuster singleViewShapeAdjuster.cc)
-target_link_libraries(singleViewShapeAdjuster ${CERES_LIBRARIES})
-
-
+add_executable(multiViewShapeandPoseAdjuster multiViewShapeandPoseAdjuster.cc)
+target_link_libraries(multiViewShapeandPoseAdjuster ${CERES_LIBRARIES})

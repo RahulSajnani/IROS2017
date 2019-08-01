@@ -155,16 +155,16 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         ERepinit = [ERepinit;tempinit];
         EReppose = [EReppose;temppose];
         ERepshape = [ERepshape;tempshape];
-        figure;
-        subplot(1,3,1);
-        visualize3dscene(d3PlotPtsWorld3d,height_camera);
-        title('before pose adjustment');
-        subplot(1,3,2);
-        visualize3dscene(d3PlotPtsWorld3D,height_camera);
-        title('after pose adjustment');
-        subplot(1,3,3);
-        visualize3dscene(d3PlotShape3D,height_camera);
-        title('after shape adjustment');
+%         figure;
+%         subplot(1,3,1);
+%         visualize3dscene(d3PlotPtsWorld3d,height_camera);
+%         title('before pose adjustment');
+%         subplot(1,3,2);
+%         visualize3dscene(d3PlotPtsWorld3D,height_camera);
+%         title('after pose adjustment');
+%         subplot(1,3,3);
+%         visualize3dscene(d3PlotShape3D,height_camera);
+%         title('after shape adjustment');
         
         tactual = table2array(tracklets(i,{'t'}));
         denom = sqrt(sum(tactual.^2));
@@ -208,6 +208,8 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
 %    terrortot./iter;
     LaftersingleView = read_lambdas(numViews)
     write_inpFile_multiviewadjuster;
+    !multicpp/multiViewShapeandPoseAdjuster
+    plot_multi_image(K,tracklets);
 end
 
         
