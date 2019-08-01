@@ -202,15 +202,15 @@ int main(int argc, char** argv){
 	// VarCallback varCallback;
 	// options.callbacks.push_back(&varCallback);
 	// options.update_state_every_iteration = true;
-  const char *FileShapeOutput = "shape_cost.txt";
+  const char *FileShapeOutput = "lambdas.txt";
   std::ofstream sfile;
-  sfile.open(FileShapeOutput);
+  sfile.open(FileShapeOutput, std::ios_base::app);
 
 	// Solve the problem and print the results
 	ceres::Solver::Summary summary;
 	ceres::Solve(options, &problem, &summary);
   // std::cout << "Shape adjustment initial cost " << summary.initial_cost << std::endl;
-  sfile << summary.final_cost << std::endl;
+  sfile << lambdas[0] << " " << lambdas[1] << " " << lambdas[2] << " " << lambdas[3] << " " << lambdas[4] << std::endl;
   sfile.close();
 //   std::cout << summary.FullReport() << "\n"; 
 
@@ -249,7 +249,7 @@ int main(int argc, char** argv){
 		// // Print the output to stdout
 		// std::cout << temp[0] << " " << temp[1] << " " << temp[2] << std::endl;
 	}
-	// outFile << lambdas[0] << " " << lambdas[1] << " " << lambdas[2] << " " << lambdas[3] << " " << lambdas[4] << std::endl;
+	std::cout << lambdas[0] << " " << lambdas[1] << " " << lambdas[2] << " " << lambdas[3] << " " << lambdas[4] << std::endl;
 	// std::cout << "rot: " << rotAngleAxis[0] << " " << rotAngleAxis[1] << " " << rotAngleAxis[2] << std::endl;
 	// std::cout << "trans: " << trans[0] << " " << trans[1] << " " << trans[2] << std::endl;
 

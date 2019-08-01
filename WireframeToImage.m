@@ -1,6 +1,12 @@
-function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avgW, avgH, K, networkOutput, lambda, eigVectors1, kplookup)
+function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avgW, avgH, K, networkOutput, lambda, eigVectors1, kplookup, numViews)
+    
+
+    avgCarHeight = avgH;
+    avgCarLength = avgL;
+    avgCarWidth = avgW;
     terrortot = 0;
     plot_data = [];
+    !rm lambdas.txt
     %scaling wireframe to avg height, width and length
     [frame2 eigVectors2] = ScaleAvg(wireframe, avgH, avgW, avgL, eigVectors1);
     % getting the tracklets
@@ -16,6 +22,12 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
     ERepshape = [];
     Figplot = [];
     DegError = [];
+    CENTER = {};
+    KPS = {};
+    SHAPEbeforesingleView = {};
+    VECTORS = {};
+    LaftersingleView = {};
+    POSEafterPnP = {};
     T = [1 0 0;0 cos(pi/2) sin(pi/2);0 -sin(pi/2) cos(pi/2)];
     r = [cos(pi) sin(pi) 0; -   sin(pi) cos(pi) 0;0 0 1];
     T2 = [cos(pi/2) 0 sin(pi/2); 0, 1, 0; -sin(pi/2), 0, cos(pi/2)];
@@ -56,19 +68,24 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         %3d world points
         d3PlotPtsWorld3d = (T3)*(T2)*(inv(r)*(frame2')) + Trans + Trans3dcent;
         
+        SHAPEbeforesingleView{i} = d3PlotPtsWorld3d';
+        CENTER{i} = mean(d3PlotPtsWorld3d');
+        
         for j=1:5
              eigVectors(j,:) =reshape(((T3)*(T2)*(inv(r))*reshape(eigVectors2(j,:),3,14)),1,42);
         end
         
+        VECTORS{i} = eigVectors;
         %writing input for pose adjustment
-        Write_input(NetPts', d3PlotPtsWorld3d',Trans + Trans3dcent, avgH, avgW, avgL, K, lambda, eigVectors, ry, kplookup);
+        kpout = Write_input(NetPts', d3PlotPtsWorld3d',Trans + Trans3dcent, avgH, avgW, avgL, K, lambda, eigVectors, ry, kplookup);
         !./singleViewPoseAdjuster
         % reading input after pose adjustment
          [Rotcorr Tcorr] = read_output();
 %         
 %         Rotcorr = eye(3,3);
 %         Tcorr = zeros(3,1);
-
+        POSEafterPnP{i} = [Rotcorr(:)' Tcorr'];
+        
         Rnew = Rotcorr*T3*Rerrorx;
         inR = Rotcorr*T3;
         A = rotm2axang(inR);
@@ -95,6 +112,8 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         d3PlotPts = K*d3PlotPtsWorld3d;
         d3PlotPts = d3PlotPts./d3PlotPts(3,:);
         NetPts = reshape(Pts(i,:), 3, 14);
+        tmpkps = NetPts'
+        KPS{i} = [tmpkps(:,1:2) kpout];
         figure;
         subplot(2,2,1)
         hold on
@@ -187,7 +206,8 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
     ylabel('Rotation Error in degrees');    
     title('Rotation error');
 %    terrortot./iter;
-
+    LaftersingleView = read_lambdas(numViews)
+    write_inpFile_multiviewadjuster;
 end
 
         

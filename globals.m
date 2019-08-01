@@ -8,7 +8,7 @@ avgCarHeight = 1.5208;
 avgCarWidth = 1.6362;
 avgCarLength = 3.8600;
 K = [721.53,0,609.55;0,721.53,172.85;0,0,1];
-
+numViews = 6;
 %mean wireframe
 frame = [2.5447 -3.7577 -1.5125;
 -3.0188 -3.8300 -1.5128;

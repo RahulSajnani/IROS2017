@@ -1,5 +1,6 @@
-function Write_input(imagePts, carPts,carcent, H, W, L, K, lambda, eigVectors, ry, kplookup)
+function out =  Write_input(imagePts, carPts,carcent, H, W, L, K, lambda, eigVectors, ry, kplookup)
     
+    out = [];
     numViews = 1;
     numPts = 14;
     numObs = 14;
@@ -47,8 +48,10 @@ function Write_input(imagePts, carPts,carcent, H, W, L, K, lambda, eigVectors, r
 %             fprintf(f, '%f ', 0.1);
 %         else
             fprintf(f, '%f ', (0.3*imagePts(i,3) + 0.7*kplookup(angle,i)./divider));
+            out = [out;(0.3*imagePts(i,3) + 0.7*kplookup(angle,i)./divider)];
 %         end
     end
+    
     fprintf(f,'\n');
     fprintf(f,'\n');
     

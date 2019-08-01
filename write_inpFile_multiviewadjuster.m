@@ -1,4 +1,4 @@
-fID = fopen('../../data/ceres_input_multiViewAdjuster.txt','w');
+fID = fopen('ceres_input_multiViewAdjuster.txt','w');
 fprintf(fID,'%d %d %d\n',numViews,14,14);
 fprintf(fID,'%f %f %f\n',avgCarHeight,avgCarWidth,avgCarLength);
 fprintf(fID,'%f %f %f %f %f %f %f %f %f\n',K(1,1),K(1,2),K(1,3),K(2,1),K(2,2),K(2,3),K(3,1),K(3,2),K(3,3));
