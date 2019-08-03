@@ -1,14 +1,21 @@
 temp = load('kpLookup_azimuth.mat');
 kplookup = struct2array(temp);
 camH = 1.65;
-seq = 9*ones(1,15); %Sequences
-frm = [48:62]; %Frames
-id  = 9*ones(1,15); %CarID's
+seqId = 5;
+CarId = 31;
+startFrame = 190;
+endFrame = 230;
+totalFrames = endFrame - startFrame + 1;
+seq = seqId*ones(1,totalFrames); %Sequences
+frm = [startFrame:endFrame]; %Frames
+id  = CarId*ones(1,totalFrames); %CarID's
+% hourglass network output
+Pts = importdata('Multi/keypoints_5_190-230_31.txt');
 avgCarHeight = 1.5208;
 avgCarWidth = 1.6362;
 avgCarLength = 3.8600;
 K = [721.53,0,609.55;0,721.53,172.85;0,0,1];
-numViews = 15;
+numViews = totalFrames;
 %mean wireframe
 frame = [2.5447 -3.7577 -1.5125;
 -3.0188 -3.8300 -1.5128;
@@ -33,8 +40,7 @@ v4 = [0.303420 0.022644 -0.223071 -0.239204 -0.000371 -0.226790 -0.230123 -0.007
 v5 = [0.109164 -0.362282 -0.059697 -0.072880 -0.359107 -0.069168 0.082780 -0.077322 -0.023031 -0.102315 0.046584 -0.014162 -0.176465 0.092178 -0.014550 0.202195 0.095555 -0.011093 -0.032977 -0.110770 -0.015152 0.039475 -0.062289 -0.018643 -0.070913 0.262228 -0.023711 0.076054 0.230184 -0.026444 0.058884 0.324946 0.029187 -0.078275 0.278465 0.029191 0.298251 -0.167472 0.083653 -0.297588 -0.172290 0.090366];
 V = [v1;v2;v3;v4;v5];
 
-% hourglass network output
-Pts = importdata('Multi/keypoints_9_48-62_9.txt');
+
 
 %lambda values
 lambda = [0.25, 0.27 ,0.01, -0.08, -0.05];

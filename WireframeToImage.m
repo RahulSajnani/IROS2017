@@ -1,4 +1,4 @@
-function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avgW, avgH, K, networkOutput, lambda, eigVectors1, kplookup, numViews)
+function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avgW, avgH, K, networkOutput, lambda, eigVectors1, kplookup, numViews,seqId,CarId,startFrame,endFrame,totalFrames)
     
 
     avgCarHeight = avgH;
@@ -112,9 +112,9 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         d3PlotPts = K*d3PlotPtsWorld3d;
         d3PlotPts = d3PlotPts./d3PlotPts(3,:);
         NetPts = reshape(Pts(i,:), 3, 14);
-        tmpkps = NetPts'
+        tmpkps = NetPts';
         KPS{i} = [tmpkps(:,1:2) kpout];
-        figure;
+        h = figure;
         subplot(2,2,1)
         hold on
         imshow(Image)
@@ -149,6 +149,7 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         subplot(2,2,4);
         visualizeWireframe2D(Image, d3PlotShape(1:2,:));
         title('After shape and pose adjustments');
+        close(h);
         out = read_plot();
         %plot_data = [plot_data ;i out];
         [tempinit, temppose, tempshape] = plot_reprojection_error(NetPts',d3PlotPts(1:2,:)',d3PlotPts2(1:2,:)',d3PlotShape(1:2,:)',0);
@@ -176,10 +177,10 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
         Terrorpercent = num.*100./denom;
         terrortot = terrortot + Terrorpercent;
         Figplot = [Figplot;i];
-        pause(2.0);
+        pause(1.0);
         %break;
     end
-    figure;
+    figuresh = figure;
     plot(Figplot,ERepinit);
     hold on
     plot(Figplot,EReppose);
@@ -189,8 +190,9 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
     legend('Initial error','Error after pose adjustment','After shape adjustment');
     hold off
     title('Reprojection Error');
+    saveas(figuresh,sprintf('../Seq%d_%d_%d_%d/ReprojectionError.jpg',seqId,startFrame,endFrame,CarId));
     
-    figure;
+    figuresl = figure;
     plot(Figplot,Etrinit);
     hold on
     plot(Figplot,EtrPose);
@@ -198,18 +200,21 @@ function WireframeToImage(wireframe, seqs, frames, ids, height_camera, avgL, avg
     ylabel('Translation Error');
     legend('Initial error','Error after pose adjustment');    
     title('Translation error');
-    
-    figure;
+    saveas(figuresl,sprintf('../Seq%d_%d_%d_%d/TranslationError.jpg',seqId,startFrame,endFrame,CarId));
+    figuresr = figure;
     plot(Figplot,DegError);
     hold on
     xlabel('Figures');
     ylabel('Rotation Error in degrees');    
     title('Rotation error');
+    saveas(figuresr,sprintf('../Seq%d_%d_%d_%d/RotationError.jpg',seqId,startFrame,endFrame,CarId));
+    
+    pause(1.0);
 %    terrortot./iter;
-    LaftersingleView = read_lambdas(numViews)
+    LaftersingleView = read_lambdas(numViews);
     write_inpFile_multiviewadjuster;
     !multicpp/multiViewShapeandPoseAdjuster
-    plot_multi_image(K,tracklets);
+    plot_multi_image(K,tracklets,seqId,CarId,startFrame,endFrame);
 end
 
         

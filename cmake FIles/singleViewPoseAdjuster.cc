@@ -141,7 +141,7 @@ int main(int argc, char** argv){
 	// Add a regularizer to the translation term (to prevent a huge drift from the initialization)
 	ceres::CostFunction *translationRegularizer = new ceres::AutoDiffCostFunction<TranslationRegularizer, 3, 3>(
 		new TranslationRegularizer(carCenter));
-	problem.AddResidualBlock(translationRegularizer, new ceres::HuberLoss(0.1), trans);
+	problem.AddResidualBlock(translationRegularizer, new ceres::HuberLoss(0.2), trans);
 
 	// Add a rotation regularizer, to ensure that the rotation is about the Y-axis
 	ceres::CostFunction *rotationRegularizer = new ceres::AutoDiffCostFunction<RotationRegularizer, 3, 3>(
